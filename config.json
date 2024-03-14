@@ -67,7 +67,7 @@
   },
   "autoUptime": {
     "enable": false,
-    "timeInterval": 180,
+    "timeInterval": 3600000,
     "url": "",
     "notes": "the value of timeInterval is seconds, url is the url you want to send the request to (automatically detected for hosting glitch or replit)"
   },
