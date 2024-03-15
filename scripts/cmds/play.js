@@ -1,111 +1,88 @@
-module.exports = {
-  config: {
-    name: "play",
-    version: "1.0",
-    author: "Mark S.",
-    countDown: 5,
-    role: 0,
-    category: "music"
-  },
+const axios = require("axios");
+const fs = require('fs-extra');
+const path = require('path');
+const ytdl = require("ytdl-core");
+const yts = require("yt-search");
 
-  onStart: async ({ api, event }) => {
-    const axios = require("axios");
-    const fs = require("fs-extra");
-    const ytdl = require("@distube/ytdl-core");
-    const yts = require("yt-search");
-
-    // Get the song name from the input
-    const input = event.body;
-    const song = input.substring(10).trim();
-
-    if (!song) {
-      return api.sendMessage("Please put a song", event.threadID);
-    }
-
+async function sing(api, event, args, message) {
+    api.setMessageReaction("🕢", event.messageID, (err) => {}, true);
     try {
-      // Search for the song on YouTube
-      let Send = await api.sendMessage("🕰️ | Searching for your song...", event.threadID);
+        let title = '';
 
-      const { videos } = await yts(song);
-      if (!videos.length) {
-        return api.sendMessage("😔 | Sorry, song not found...", event.threadID, event.messageID);
-      }
-
-      // Get the first video result
-      const { url, title, author } = videos[0];
-
-      // Download the audio stream of the video
-      // Use the lowest quality format available
-      const stream = ytdl(url, { quality: 'lowestaudio' });
-
-      // Create a file name and path for the audio
-      const fileName = `music.mp3`;
-      const filePath = __dirname + `/cache/${fileName}`;
-
-      // Save the audio stream to the file
-      stream.pipe(fs.createWriteStream(filePath));
-
-      stream.on('response', () => {
-        console.info('[DOWNLOADER]', 'Starting download now!');
-      });
-
-      stream.on('info', (info) => {
-        console.info('[DOWNLOADER]', `Downloading ${info.videoDetails.title} by ${info.videoDetails.author.name}`);
-      });
-
-      stream.on('end', async () => {
-        console.info('[DOWNLOADER] Downloaded');
-        await api.unsendMessage(Send.messageID);
-
-        // Check the file size and create an attachment
-        if (fs.statSync(filePath).size > 26214400) {
-          fs.unlinkSync(filePath);
-          return api.sendMessage('The file could not be sent because it is larger than 25MB.', event.threadID);
-        }
-
-        const attachment = fs.createReadStream(filePath);
-
-        // Get the lyrics for the song from the lyrist API using the video title
-        // Use a regular expression to extract only the song name and the main artist from the video title
-        const regex = /^(.+?)\s*-\s*(.+?)(?:\s*\(|\[|$)/;
-        const match = title.match(regex);
-        if (!match) {
-          api.sendMessage("Sorry, could not parse the video title!", event.threadID, event.messageID);
-          return;
-        }
-        const [artist, songName] = match.slice(1, 3);
-        const apiUrl = `https://lyrist.vercel.app/api/${encodeURIComponent(artist + " - " + songName)}`;
-        const { data } = await axios.get(apiUrl);
-        const lyrics = data.lyrics;
-        if (!lyrics) {
-          // Send the song and the lyrics error in the same message
-          // Add the emojis before the title and the artist name
-          const message = {
-            body: `🎵 | Title: ${title}\n🎤 | Artist/Studio: ${author.name}\n\n😔 | Sorry, lyrics not found...`,
-            attachment: attachment
-          };
-
-          api.sendMessage(message, event.threadID, () => {
-            fs.unlinkSync(filePath);
-          });
-
-          // Then return from the function
-          return;
-        }
-        // Send the lyrics and the song as a message
-        // Add the emojis before the title and the artist name
-        const message = {
-          body: `🎵 | Title: ${title}\n🎤 | Artist: ${author.name}\n\n${lyrics}`,
-          attachment: attachment
+        const extractShortUrl = async () => {
+            const attachment = event.messageReply.attachments[0];
+            if (attachment.type === "video" || attachment.type === "audio") {
+                return attachment.url;
+            } else {
+                throw new Error("Invalid attachment type.");
+            }
         };
 
-        api.sendMessage(message, event.threadID, () => {
-          fs.unlinkSync(filePath);
+        if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
+            const shortUrl = await extractShortUrl();
+            const musicRecognitionResponse = await axios.get(`https://youtube-music-sooty.vercel.app/kshitiz?url=${encodeURIComponent(shortUrl)}`);
+            title = musicRecognitionResponse.data.title;
+        } else if (args.length === 0) {
+            message.reply("Please provide a lyrics name");
+            return;
+        } else {
+            title = args.join(" ");
+        }
+
+        const searchResults = await yts(title);
+        if (!searchResults.videos.length) {
+            message.reply("No song and lyrics found for the given query.");
+            return;
+        }
+
+        const videoUrl = searchResults.videos[0].url;
+        const stream = ytdl(videoUrl, { filter: "audioonly" });
+
+        const fileName = `lado.mp3`;
+        const filePath = path.join(__dirname, "cache", fileName);
+        const writer = fs.createWriteStream(filePath);
+
+        stream.pipe(writer);
+
+        writer.on('finish', async () => {
+            const audioStream = fs.createReadStream(filePath);
+
+           
+            const lyricsResponse = await axios.get(`https://lyrist.vercel.app/api/${encodeURIComponent(title)}`);
+            const { lyrics } = lyricsResponse.data;
+
+          
+            const messageBody = `🎧 Playing: ${title}\n\n${lyrics}`;
+
+            
+            message.reply({ body: messageBody, attachment: audioStream });
+
+            api.setMessageReaction("✅", event.messageID, () => {}, true);
         });
-      });
+
+        writer.on('error', (error) => {
+            console.error("Error:", error);
+            message.reply("Error occurred while processing the song.");
+        });
     } catch (error) {
-      console.error('[ERROR]', error);
-      api.sendMessage('An error occurred while processing the command.', event.threadID);
+        console.error("Error:", error);
+        message.reply("Error occurred while processing the song.");
     }
-  }
+}
+
+module.exports = {
+    config: {
+        name: "play",
+        version: "1.0",
+        author: "Vex_Kshitiz",
+        countDown: 10,
+        role: 0,
+        shortDescription: "play music withs its lyrics",
+        longDescription: "play music witg it lyrics.",
+        category: "music",
+        guide: "{p] play lyricsName"
+    },
+    onStart: function ({ api, event, args, message }) {
+        return sing(api, event, args, message);
+    }
 };
