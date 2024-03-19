@@ -4,8 +4,8 @@ module.exports = {
   config: {
     name: "lyrics",
     version: "1.0",
-    author: "rulex-al/loufi",
-    countDown: 5,
+    author: "Aryan Chauhan",
+    countDown: 0,
     role: 0,
     shortDescription: {
       en: "Get lyrics for a song",
@@ -15,31 +15,33 @@ module.exports = {
     },
     category: "music",
     guide: {
-      en: "{prefix}lyrics <song name>",
+      en: "{p}{n} <song name>",
     },
   },
 
   onStart: async function ({ api, event, args }) {
     const songName = args.join(" ");
     if (!songName) {
-      api.sendMessage("Please provide a song name!", event.threadID, event.messageID);
+      api.sendMessage("⛔ 𝗜𝗡𝗩𝗔𝗟𝗜𝗗 𝗧𝗜𝗧𝗟𝗘\n\n💕 Please Provide A Song Name!", event.threadID, event.messageID);
       return;
     }
 
-    const apiUrl = `https://lyrist.vercel.app/api/${encodeURIComponent(songName)}`;
+    const apiUrl = `https://officialaryansapis.onrender.com/lyrics?songName${encodeURIComponent(songName)}`;
     try {
       const response = await axios.get(apiUrl);
-      const { lyrics, title, artist } = response.data;
-
+      const { lyrics, title, artist, image } = response.data;
       if (!lyrics) {
-        api.sendMessage(`Sorry, lyrics for "${title}" by ${artist} not found!`, event.threadID, event.messageID);
-      } else {
-        const formattedLyrics = `🎧 | Title: ${title}\n🎤 | Artist: ${artist}\n\n${lyrics}`;
-        api.sendMessage(formattedLyrics, event.threadID, event.messageID);
+        api.sendMessage("⛔ 𝗡𝗢𝗧 𝗙𝗢𝗨𝗡𝗗\n\n😸 Sorry, lyrics not found!", event.threadID, event.messageID);
+        return;
       }
+      let message = `📌 𝗛𝗘𝗥𝗘 𝗜𝗦 𝗟𝗬𝗥𝗜𝗖𝗦\n\n🎧 𝗧𝗜𝗧𝗟𝗘\n➪ ${title}\n👑 𝗔𝗥𝗧𝗜𝗦𝗧 \n➪ ${artist} \n\n🎶 𝗟𝗬𝗥𝗜𝗖𝗦\n➪ ${lyrics}`;
+      let attachment = await global.utils.getStreamFromURL(image);
+      api.sendMessage({ body: message, attachment }, event.threadID, (err, info) => {
+        let id = info.messageID;
+      });
     } catch (error) {
       console.error(error);
-      api.sendMessage(`Sorry, there was an error getting the lyrics for "${songName}"!`, event.threadID, event.messageID);
+      api.sendMessage("Sorry, there was an error getting the lyrics!", event.threadID, event.messageID);
     }
   },
 };
