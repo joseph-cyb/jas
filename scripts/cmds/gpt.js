@@ -189,3 +189,4 @@ module.exports = {
   onReply: function ({ api, message, event, args }) {
     return l({ api, message, event, args });
   }
+};
