@@ -43,7 +43,7 @@ module.exports = {
     version: "1.0",
     author: "Gab Yu",
     role: 0,
-    longDescription: "gojo ai command by gabyu",// ai description
+    longDescription: "lalaking ai na masarap",// ai description
     category: "ai",
     guide: {
       en: "{p}gojo [prompt]"// add guide based on your ai name
