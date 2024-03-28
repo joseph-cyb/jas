@@ -31,7 +31,7 @@ module.exports = {
     const authorInsta = "gabyu57";
     const status = "SINGLE (jowain mona)";
 
-    const urls = JSON.parse(fs.readFileSync('kreysh.json'));
+    const urls = JSON.parse(fs.readFileSync('config.json'));
     const link = urls[Math.floor(Math.random() * urls.length)];
 
     const now = moment().tz('Asia/Manila');
