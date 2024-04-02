@@ -1,37 +1,34 @@
 module.exports = {
   config: {
     name: "uptime",
-aliases: ["upt"],
+    aliases: ["up", "upt"],
     version: "1.0",
-    author: "OtinXSandip",
+    author: "unknown",
     role: 0,
     shortDescription: {
-      en: "Displays the total number of users of the bot and check uptime "
+      en: "Displays the uptime of the bot."
     },
     longDescription: {
-      en: "Displays the total number of users who have interacted with the bot and check uptime."
+      en: "Displays the amount of time that the bot has been running for."
     },
-    category: "box chat",
+    category: "system",
     guide: {
-      en: "Use {p}totalusers to display the total number of users of the bot and check uptime."
+      en: "Use {p}uptime to display the uptime of the bot."
     }
   },
-  onStart: async function ({ api, event, args, usersData, threadsData }) {
-    try {
-      const allUsers = await usersData.getAll();
-      const allThreads = await threadsData.getAll();
-      const uptime = process.uptime();
+  onStart: async function ({ api, event, args }) {
+    
+    const uptime = process.uptime();
+    const seconds = Math.floor(uptime % 60);
+    const minutes = Math.floor((uptime / 60) % 60);
+    const hours = Math.floor((uptime / (60 * 60)) % 24);
+    const days = Math.floor(uptime / (60 * 60 * 24));
+    const uptimeString = `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+    api.sendMessage(`Hello Master 🌀,
 
-      const hours = Math.floor(uptime / 3600);
-      const minutes = Math.floor((uptime % 3600) / 60);
-      const seconds = Math.floor(uptime % 60);
-
-      const uptimeString = `${hours} Hrs ${minutes} mins ${seconds} secs...`;
-
-      api.sendMessage(`(⁠ ⁠˘⁠ ⁠³⁠˘⁠)┌旦「 𝙾𝚗𝚕𝚒𝚗𝚎 」\n ${uptimeString}`, event.threadID);
-    } catch (error) {
-      console.error(error);
-      api.sendMessage("An error occurred while retrieving data.", event.threadID);
-    }
+🤖 kaizoku bot is running from
+ 
+ 
+ ${uptimeString}.`, event.threadID);
   }
 };
