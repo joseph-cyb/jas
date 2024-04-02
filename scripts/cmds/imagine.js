@@ -1,116 +1,82 @@
+global.api = {
+  samirApi: "https://apis-samir.onrender.com"
+};
+
 const axios = require('axios');
-const badWords = ["gay", "pussy", "dick","nude"," without","clothes","sugar","fuck","fucked","step","🤭","🍼","shit","bitch","hentai","🥵","clothes","sugar","fuck","fucked","step","?","?","shit","bitch","hentai","?","sex","fuck","boobs","cute girl undressed","undressed", "nude","without clothes", "without cloth"];
 
 module.exports = {
   config: {
-    name: 'imagine',
-    version: '1.0',
-    author: 'rehat--',
-    countDown: 0,
+    name: "imagine",
+    aliases: ["sdi"],
+    author: "Samir Œ/ Architectdevs",
+    version: "1.0",
+    countDown: 10,
     role: 0,
-    longDescription: {
-      en: 'Text to Image'
-    },
-    category: 'image',
-   guide: {
-        en: '1 | 3Guofeng3_v34' +
-'\n2 | absolutereality_V16' +
-'\n3 | absolutereality_v181' +
-'\n4 | amIReal_V41' +
-'\n5 | analog-diffusion-1.0' +
-'\n6 | anythingv3' +
-'\n7 | anything-v4.5' +
-'\n8 | anythingV5' +
-'\n9 | AOM3A3_orangemixs' +
-'\n10 | blazing_drive_v10' +
-'\n11 | cetusMix_V35' +
-'\n12 | childrensStories_v13' +
-'\n13 | childrensStories_v1' +
-'\n14 | childrensStories_v1ToonAnime' +
-'\n15 | Counterfeit_v30' +
-'\n16 | cuteyukimixAdorable_midchapter3' +
-'\n17 | cyberrealistic_v33' +
-'\n18 | dalcefo_v4' +
-'\n19 | deliberate_v2' +
-'\n20 | deliberate_v3' +
-'\n21 | dreamlike-anime-1.0' +
-'\n22 | dreamlike-diffusion-1.0' +
-'\n23 | dreamlike-photoreal-2.0' +
-'\n24 | dreamshaper_6' +
-'\n25 | dreamshaper_7' +
-'\n26 | dreamshaper_8' +
-'\n27 | edgeOfRealism_eorV20' +
-'\n28 | EimisAnimeDiffusion_V1' +
-'\n29 | elldreths-vivid-mix' +
-'\n30 | epicrealism_naturalSinRC1VAE' +
-'\n31 | ICantBelieveItsNotPhotography_seco' +
-'\n32 | juggernaut_aftermath' +
-'\n33 | lofi_v4' +
-'\n34 | lyriel_v16' +
-'\n35 | majicmixRealistic_v4' +
-'\n36 | mechamix_v10' +
-'\n37 | meinamix_meinaV9' +
-'\n38 | meinamix_meinaV11' +
-'\n39 | neverendingDream_v122' +
-'\n40 | openjourney_V4' +
-'\n41 | pastelMixStylizeAnime' +
-'\n42 | portraitplus_V1.0' +
-'\n43 | protogenx34' +
-'\n44 | Realistic_Vision_V1.4' +
-'\n45 | Realistic_Vision_V2.0' +
-'\n46 | Realistic_Vision_V4.0' +
-'\n47 | Realistic_Vision_V5.0' +
-'\n48 | redshift_diffusion-V10' +
-'\n49 | revAnimated_v122' +
-'\n50 | rundiffusionFX25D_v10' +
-'\n51 | rundiffusionFX_v10' +
-'\n52 | sdv1_4' +
-'\n53 | v1-5-pruned-emaonly' +
-'\n54 | shoninsBeautiful_v10' +
-'\n55 | theallys-mix-ii-churned' +
-'\n56 | timeless-1.0' +
-'\n57 | toonyou_beta6'
-      }
+    shortDescription: "Generates an image from a text description",
+    longDescription: "Generates an image from a text description",
+    category: "ai",
+    guide: {
+      en: "{pn} prompt | model \n Models:\n 1: animagineXL \n 2: dreamshaperXL\n 3: dynavisionXL \n 4: juggernautXL \n 5: realismEngineSDXL \n 6:  realvisxlV40 \n 7: sd_xl_base \n 8: inpaint \n 9:turbovisionXL",
+    }
   },
 
-  onStart: async function ({ message, args, event, api }) {
-        const permission = ["100005954550355"];
-    if (!permission.includes(event.senderID)) {
-      api.sendMessage(
-        `❌ | Command "prodia" currently unavailable buy premium to use the command.`,
-        event.threadID,
-        event.messageID
-      );
-      return;
+  langs: {
+    en: {
+      loading: "Generating image, please wait...",
+      error: "An error occurred, please try again later"
     }
-    try {
-      const info = args.join(' ');
-      const [prompt, model] = info.split('|').map(item => item.trim());
-      const text = args.join ("");
-          if (!text) {
-      return message.reply("❎ | Please Provide a Prompt");
-    }   
-      if (containsBadWords(prompt)) {
-        return message.reply('❎ | NSFW Prompt Detected');
-      }   
-      const modelParam = model || '3';
-      const apiUrl = `https://turtle-apis.onrender.com/api/prodia?prompt=${prompt}&model=${modelParam}`;
+  },
 
-      await message.reply('Please Wait...⏳');
-      const form = {
-      };
-      form.attachment = [];
-      form.attachment[0] = await global.utils.getStreamFromURL(apiUrl);
+  onStart: async function ({ event, message, getLang, threadsData, api, args }) {
+    const { threadID } = event;
 
-      message.reply(form);
-    } catch (error) {
-      console.error(error);
-      await message.reply('❎ | Sorry, API Have Skill Issue');
+    const info = args.join(" ");
+    if (!info) {
+      return message.reply(`- baka, type your imagination!`);
+    } else {
+      const msg = info.split("|");
+      const text = msg[0];
+      const model = msg[1] || '1'; 
+      const timestamp = new Date().getTime();
+
+      try {
+        let msgSend = message.reply(getLang("loading"));
+        const { data } = await axios.get(
+          `${global.api.samirApi}/sdxl/generate?prompt=${text}&model=${model}`
+        );
+
+        const imageUrls = data.imageUrls[0];
+        const shortLink = await global.utils.uploadImgbb(imageUrls);
+        
+        let fUrl = shortLink.image.url;
+        await message.unsend((await msgSend).messageID);
+        if (imageUrls) {
+          message.reply({
+            body: `Here's your AI generated image \n prompt "${text}" \n HD download Link: ${fUrl}`,
+            attachment: await global.utils.getStreamFromURL(imageUrls)
+          });
+        } else {
+          throw new Error("Failed to fetch the generated image. Contact the administration group to resolve the issue. Group link: https://www.facebook.com/groups/761805065901067/?ref=share");
+        }
+      } catch (err) {
+        console.error(err);
+        return message.reply(getLang("error"));
+      }
     }
   }
 };
 
-function containsBadWords(prompt) {
-  const promptLower = prompt.toLowerCase();
-  return badWords.some(badWord => promptLower.includes(badWord));
+function getModelName(model) {
+  switch (model) {
+    case '1': return "animagineXL";
+    case '2': return "dreamshaperXL";
+    case '3': return "dynavisionXL";
+    case '4': return "juggernautXL";
+    case '5': return "realismEngineSDXL";
+    case '6': return "realvisxlV40";
+    case '7': return "sd_xl_base";
+    case '8': return "inpaint";
+    case '9': return "turbovisionXL";
+    default: return "animagineXL";
+  }
 }
