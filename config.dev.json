@@ -22,8 +22,13 @@
     "100051189616758"
   ],
   "whiteListMode": {
-    "enable": false,
-    "whiteListIds": [],
+    "enable": true,
+    "whiteListIds": [
+"100079114908948",
+"100088826217426",
+"100051189616758"
+"100088436832155"
+],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
   "OWNER": "Gab Yu",
