@@ -21,7 +21,7 @@ config: {
       age: 'Unknown',
       height: 'Unknown',
       facebookLink: 'https://www.facebook.com/100079114908948',
-      nick: 'GYU'
+      nick: 'GYAT'
     };
 
     const bold = 'https://i.imgur.com/DDO686J.mp4'; // Replace with your Google Drive videoid link https://drive.google.com/uc?export=download&id=here put your video id
