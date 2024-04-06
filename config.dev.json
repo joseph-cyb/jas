@@ -22,13 +22,8 @@
     "100051189616758"
   ],
   "whiteListMode": {
-    "enable": true,
-    "whiteListIds": [
-"100079114908948",
-"100088826217426",
-"100051189616758"
-"100088436832155"
-],
+    "enable": false,
+    "whiteListIds": [],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
   "OWNER": "Gab Yu",
@@ -121,7 +116,7 @@
   },
   "hideNotiMessage": {
     "wrongCommand": false,
-    "adminOnly": false,
+    "adminOnly": true,
     "threadBanned": false,
     "userBanned": false
   },
