@@ -47,7 +47,11 @@ onReply: async function({ api, event, Reply, getLang, commandName, prefix }) {
         const index = body.split(/\s+/);
         for (const singleIndex of index) {
             if (isNaN(singleIndex) || singleIndex <= 0 || singleIndex > Reply.pending.length) return api.sendMessage(getLang("invaildNumber", singleIndex), threadID, messageID);
-            api.sendMessage(`•تم توصيل يوكي بنجاح 🫂🤍:\n\n•إنضموا إلى هنا لمعرفة للمزيد عن البوت:\nhttps://facebook.com/groups/235038219450134/\n\n•أكتب ${prefix}دخول لدخول مجموعة المسنجر 🙂🤍\n\n•أكتب ${prefix}الاوامر لعرض أوامر البوت🫂🌝🤍`, Reply.pending[singleIndex - 1].threadID);
+            api.sendMessage(`Thread Approve by admin
+
+prefix : /
+
+Owner:https://www.facebook.com/100079114908948`, Reply.pending[singleIndex - 1].threadID);
             count+=1;
         }
         return api.sendMessage(getLang("approveSuccess", count), threadID, messageID);
