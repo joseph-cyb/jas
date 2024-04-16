@@ -49,9 +49,9 @@ onReply: async function({ api, event, Reply, getLang, commandName, prefix }) {
             if (isNaN(singleIndex) || singleIndex <= 0 || singleIndex > Reply.pending.length) return api.sendMessage(getLang("invaildNumber", singleIndex), threadID, messageID);
             api.sendMessage(`Thread Approve by admin
 
-prefix : /
+prefix - /
 
-Owner:https://www.facebook.com/100079114908948`, Reply.pending[singleIndex - 1].threadID);
+Owner - https://www.facebook.com/100079114908948`, Reply.pending[singleIndex - 1].threadID);
             count+=1;
         }
         return api.sendMessage(getLang("approveSuccess", count), threadID, messageID);
