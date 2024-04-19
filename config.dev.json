@@ -18,7 +18,7 @@
   },
   "adminBot": [
     "100079114908948",
-    "100088826217426",
+    "100076651767866",
     ""
   ],
   "whiteListMode": {
@@ -29,9 +29,9 @@
   "OWNER": "Gab Yu",
   "AGE": "14",
   "GENDER": "MALE",
-  "nickNameBot": "𝗚𝗼𝗷𝗼 | ☣️",
+  "nickNameBot": "𝗧𝗚𝗙 𝗕𝗢𝗧",
   "FACEBOOK": "https://www.facebook.com/profile.php?id=100079114908948",
-  "prefix": "/",
+  "prefix": "!",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
