@@ -26,7 +26,7 @@ module.exports = {
     const uptimeString = `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
     api.sendMessage(`𝗛𝗲𝗹𝗹𝗼 𝗠𝗮𝘀𝘁𝗲𝗿 🌀,
 
-🤖 𝗚𝗼𝗷𝗼 𝗯𝗼𝘁 𝗶𝘀 𝗿𝘂𝗻𝗻𝗶𝗻𝗴 𝗳𝗿𝗼𝗺
+🤖 𝗧𝗚𝗙 𝗯𝗼𝘁 𝗶𝘀 𝗿𝘂𝗻𝗻𝗶𝗻𝗴 𝗳𝗿𝗼𝗺
  
  
  ${uptimeString}.`, event.threadID);
