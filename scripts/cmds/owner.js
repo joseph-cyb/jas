@@ -16,15 +16,15 @@ config: {
   onStart: async function ({ api, event }) {
   try {
     const ownerInfo = {
-      name: '𝗝𝗔𝗞𝗘 𝗝𝗢𝗦𝗛𝗨𝗔',
+      name: '𝗚𝗔𝗕 𝗬𝗨',
       gender: '𝗠𝗔𝗟𝗘',
-      age: '𝗡𝗢𝗡𝗘',
-      height: '𝗡𝗢𝗡𝗘',
-      facebookLink: 'https://www.facebook.com/profile.php?id=100076651767866',
-      nick: '𝗝𝗔𝗞𝗘'
+      age: '𝟭𝟰',
+      height: '𝟱 𝟳',
+      facebookLink: 'https://www.facebook.com/profile.php?id=100079114908948',
+      nick: '𝗚𝗜𝗬𝗨'
     };
 
-    const bold = 'https://scontent-fra3-1.xx.fbcdn.net/v/t15.5256-10/344285141_1443149709783586_10012193223158773_n.jpg?stp=dst-jpg_p180x540&_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ot6KLkODUY0Ab6AESyi&_nc_ht=scontent-fra3-1.xx&oh=00_AfC56ytlF93G0_fMVoviqDChrsV4DjTLFD7An3gSxUiAjw&oe=6628E796'; // Replace with your Google Drive videoid link https://drive.google.com/uc?export=download&id=here put your video id
+    const bold = 'https://drive.google.com/file/d/1rFE6PeHIjdHw5u8sR6BIfqvLGBqdQRZt/view?usp=drivesdk'; // Replace with your Google Drive videoid link https://drive.google.com/uc?export=download&id=here put your video id
 
     const tmpFolderPath = path.join(__dirname, 'tmp');
 
