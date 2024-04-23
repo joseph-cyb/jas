@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "jonasdevon12222@gmail.com",
-    "password": "jonasdevon344 ",
+    "email": "oldgojo@gmail.com",
+    "password": "456123789",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -18,7 +18,7 @@
   },
   "adminBot": [
     "100079114908948",
-    "100076651767866",
+    "",
     ""
   ],
   "whiteListMode": {
@@ -29,9 +29,9 @@
   "OWNER": "Gab Yu",
   "AGE": "14",
   "GENDER": "MALE",
-  "nickNameBot": "𝗧𝗚𝗙 𝗕𝗢𝗧",
+  "nickNameBot": "𝗚𝗼𝗷𝗼 | ☣️",
   "FACEBOOK": "https://www.facebook.com/profile.php?id=100079114908948",
-  "prefix": "!",
+  "prefix": "/",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
@@ -70,7 +70,7 @@
     }
   },
   "autoRestart": {
-    "time": 3600000,
+    "time": 0,
     "notes": "you can set time is interval with milisecond or cron time, example: 1000, 10000, 60000, 3600000, 86400000, 0 0 * * *,... docs: https://www.npmjs.com/package/node-cron. If you set time is 0 or false or null, the bot will not auto restart"
   },
   "autoUptime": {
