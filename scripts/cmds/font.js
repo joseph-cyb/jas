@@ -210,7 +210,7 @@ module.exports = {
     longDescription:
       'Choose from various font styles like bold, italic, cursive, etc. and transform your text into a unique visual format.',
     category: 'font',
-    guide: '-font <font type> <text>',
+    guide: '/font <font type> <text>',
   },
   onStart: async ({ event, api, args }) => {
     if (args.length === 1 && args[0].toLowerCase() === 'list') {
