@@ -45,7 +45,7 @@ module.exports = {
       }
     }
     var id2 = ungvien[Math.floor(Math.random() * ungvien.length)];
-    var name2 = "Uff ksto ramro jodi 💋"; // Replace with function that retrieves the name of the user
+    var name2 = "Sana mag tagal pa kayo💋"; // Replace with function that retrieves the name of the user
     var rd1 = Math.floor(Math.random() * 100) + 1;
     var cc = ["0", "-1", "99,99", "-99", "-100", "101", "0,01"];
     var rd2 = cc[Math.floor(Math.random() * cc.length)];
