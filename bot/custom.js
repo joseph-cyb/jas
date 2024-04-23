@@ -1,16 +1,134 @@
-const { log } = global.utils;
+const logger = require('./utils/log');
+const cron = require('node-cron');
 
-module.exports = async function ({ api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getText }) {
-	// This is where you can add your custom code to the bot.
-	// The bot will run this code every time it starts up (after logging in and loading data from the database).
+module.exports = async ({ api }) => {
+  const minInterval = 5;
+  let lastMessageTime = 0;
+  let messagedThreads = new Set();
 
-	setInterval(async () => {
-		api.refreshFb_dtsg()
-			.then(() => {
-				log.succes("refreshFb_dtsg", getText("custom", "refreshedFb_dtsg"));
-			})
-			.catch((err) => {
-				log.error("refreshFb_dtsg", getText("custom", "refreshedFb_dtsgError"), err);
-			});
-	}, 1000 * 60 * 60 * 48); // 48h
+  const config = {
+    autoRestart: {
+      status: false,
+      time: 40,
+      note: 'To avoid problems, enable periodic bot restarts',
+    },
+    acceptPending: {
+      status: false,
+      time: 30,
+      note: 'Approve waiting messages after a certain time',
+    },
+  };
+
+  function autoRestart(config) {
+    if (config.status) {
+      cron.schedule(`*/${config.time} * * * *`, () => {
+        logger('Start rebooting the system!', 'Auto Restart');
+        process.exit(1);
+      });
+    }
+  }
+
+  function acceptPending(config) {
+    if (config.status) {
+      cron.schedule(`*/${config.time} * * * *`, async () => {
+        const list = [
+          ...(await api.getThreadList(1, null, ['PENDING'])),
+          ...(await api.getThreadList(1, null, ['OTHER'])),
+        ];
+        if (list[0]) {
+          api.sendMessage('You have been approved for the queue. (This is an automated message)', list[0].threadID);
+        }
+      });
+    }
+  }
+
+  autoRestart(config.autoRestart);
+  acceptPending(config.acceptPending);
+
+  // AUTOGREET EVERY 10 MINUTES
+  cron.schedule('*/10 * * * *', () => {
+    const currentTime = Date.now();
+    if (currentTime - lastMessageTime < minInterval) {
+      console.log("Skipping message due to rate limit");
+      return;
+    }
+    api.getThreadList(25, null, ['INBOX'], async (err, data) => {
+      if (err) return console.error("Error [Thread List Cron]: " + err);
+      let i = 0;
+      let j = 0;
+
+      async function message(thread) {
+        try {
+          api.sendMessage({
+            body: `⟩ Thank you for using my bot!\n\n⟩ Owner Link: https: https://www.facebook.com/profile.php?id=100079114908948`
+          }, thread.threadID, (err) => {
+            if (err) return;
+            messagedThreads.add(thread.threadID);
+
+          });
+        } catch (error) {
+          console.error("Error sending a message:", error);
+        }
+      }
+
+      while (j < 20 && i < data.length) {
+        if (data[i].isGroup && data[i].name != data[i].threadID && !messagedThreads.has(data[i].threadID)) {
+          await message(data[i]);
+          j++;
+          const CuD = data[i].threadID;
+          setTimeout(() => {
+            messagedThreads.delete(CuD);
+          }, 1000);
+        }
+        i++;
+      }
+    });
+  }, {
+    scheduled: true, // Set this to false to turn it off
+    timezone: "Asia/Manila"
+  });
+
+  // AUTOGREET EVERY 30 MINUTES
+  cron.schedule('*/30 * * * *', () => {
+    const currentTime = Date.now();
+    if (currentTime - lastMessageTime < minInterval) {
+      console.log("Skipping message due to rate limit");
+      return;
+    }
+    api.getThreadList(25, null, ['INBOX'], async (err, data) => {
+      if (err) return console.error("Error [Thread List Cron]: " + err);
+      let i = 0;
+      let j = 0;
+
+      async function message(thread) {
+        try {
+          api.sendMessage({
+            body: `Hey There! How are you remember don't spam the bot ヾ(＾-＾)ノ`
+          }, thread.threadID, (err) => {
+            if (err) return;
+            messagedThreads.add(thread.threadID);
+
+          });
+        } catch (error) {
+          console.error("Error sending a message:", error);
+        }
+      }
+
+
+      while (j < 20 && i < data.length) {
+        if (data[i].isGroup && data[i].name != data[i].threadID && !messagedThreads.has(data[i].threadID)) {
+          await message(data[i]);
+          j++;
+          const CuD = data[i].threadID;
+          setTimeout(() => {
+            messagedThreads.delete(CuD);
+          }, 1000);
+        }
+        i++;
+      }
+    });
+  }, {
+    scheduled: true, // Set this to false to turn it off
+    timezone: "Asia/Manila"
+  });
 };
