@@ -29,7 +29,7 @@ module.exports = {
       const prompt = event.body.substring(prefix.length).trim();
 
       if (!prompt) {
-        const defaultMessage = getCenteredHeader("𝗧𝗚𝗙 𝗕𝗢𝗧 | ☣️") + "\n" + horizontalLine + "\nHello! Ask me anything!\n" + horizontalLine;
+        const defaultMessage = getCenteredHeader("𝗚𝗼𝗷𝗼 | ☣️") + "\n" + horizontalLine + "\nHello! Ask me anything!\n" + horizontalLine;
         await message.reply(defaultMessage);
         return;
       }
@@ -37,7 +37,7 @@ module.exports = {
       const answer = await getGPTResponse(prompt);
 
       // Adding header and horizontal lines to the answer
-      const answerWithHeader = getCenteredHeader("𝗧𝗚𝗙 𝗕𝗢𝗧 | ☣️") + "\n" + horizontalLine + "\n" + answer + "\n" + horizontalLine;
+      const answerWithHeader = getCenteredHeader("𝗚𝗼𝗷𝗼 | ☣️") + "\n" + horizontalLine + "\n" + answer + "\n" + horizontalLine;
       
       await message.reply(answerWithHeader);
     } catch (error) {
