@@ -114,7 +114,7 @@ module.exports = {
 
       msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n╰────────◊\n\n`;
 
-      msg += `「  𝗧𝗚𝗙 | ☣️ 」`; // its not decoy so change it if you want 
+      msg += `「  𝗚𝗼𝗷𝗼 | ☣️ 」`; // its not decoy so change it if you want 
 
 
       await message.reply(msg);
