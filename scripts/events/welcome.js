@@ -16,7 +16,13 @@ module.exports = {
 			session2: "trưa",
 			session3: "chiều",
 			session4: "tối",
-			welcomeMessage: "Cảm ơn bạn đã mời tôi vào nhóm!\nPrefix bot: %1\nĐể xem danh sách lệnh hãy nhập: %1help",
+			welcomeMessage: "✅ 𝗖𝗢𝗡𝗡𝗘𝗖𝗧𝗘𝗗 𝗦𝗨𝗖𝗖𝗘𝗦! 
+
+➭ BotName: 𝗚𝗢𝗝𝗢 𝗕𝗢𝗧
+➭ Bot Prefix: ⟨ / ⟩
+➭ Admin: ⟨𝗚𝗔𝗕 𝗬𝗨⟩
+➭ Ownerlink: ‹https://www.facebook.com/100079114908948›
+➭ Use /help to view command details",
 			multiple1: "bạn",
 			multiple2: "các bạn",
 			defaultWelcomeMessage: "Xin chào {userName}.\nChào mừng bạn đến với {boxName}.\nChúc bạn có buổi {session} vui vẻ!"
