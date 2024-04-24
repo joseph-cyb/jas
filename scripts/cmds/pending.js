@@ -49,11 +49,11 @@ onReply: async function({ api, event, Reply, getLang, commandName, prefix }) {
             if (isNaN(singleIndex) || singleIndex <= 0 || singleIndex > Reply.pending.length) return api.sendMessage(getLang("invaildNumber", singleIndex), threadID, messageID);
             api.sendMessage(`✅ 𝗖𝗢𝗡𝗡𝗘𝗖𝗧𝗘𝗗 𝗦𝗨𝗖𝗖𝗘𝗦! 
 
-➭ BotName: 𝗧𝗚𝗙 𝗕𝗢𝗧
-➭ Bot Prefix: ⟨ ! ⟩
-➭ Admin: ⟨𝗝𝗔𝗞𝗘 𝗝𝗢𝗦𝗛𝗨𝗔⟩
-➭ Ownerlink: ‹https://www.facebook.com/100076651767866›
-➭ Use !help to view command details`, Reply.pending[singleIndex - 1].threadID);
+➭ BotName: 𝗚𝗢𝗝𝗢 𝗕𝗢𝗧
+➭ Bot Prefix: ⟨ / ⟩
+➭ Admin: ⟨ 𝗚𝗔𝗕 𝗬𝗨 ⟩
+➭ Ownerlink: ‹https://www.facebook.com/100079114908948›
+➭ Use /help to view command details`, Reply.pending[singleIndex - 1].threadID);
             count+=1;
         }
         return api.sendMessage(getLang("approveSuccess", count), threadID, messageID);
