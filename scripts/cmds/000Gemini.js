@@ -80,7 +80,7 @@ async function kshitiz(api, event, args, message) {
 
 async function b(c, d, e, f) {
   try {
-    const g = await axios.get(`https://haze-ultra-advanced-d80346bab842.herokuapp.com/bard?question=`);
+    const g = await axios.get(`https://gemini-ai-pearl-two.vercel.app/kshitiz?prompt=${encodeURIComponent(c)}&uid=${d}&apikey=kshitiz`);
     return g.data.answer;
   } catch (h) {
     throw h;
