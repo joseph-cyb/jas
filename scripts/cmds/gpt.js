@@ -1,214 +1,65 @@
+const moment = require("moment-timezone");
 const axios = require('axios');
-const fs = require('fs-extra');
-const path = require('path');
-const ytdl = require("ytdl-core");
-const yts = require("yt-search");
-
-async function lado(api, event, args, message) {
-  try {
-    const songName = args.join(" ");
-    const searchResults = await yts(songName);
-
-    if (!searchResults.videos.length) {
-      message.reply("No song found for the given query.");
-      return;
-    }
-
-    const video = searchResults.videos[0];
-    const videoUrl = video.url;
-    const stream = ytdl(videoUrl, { filter: "audioonly" });
-    const fileName = `music.mp3`; 
-    const filePath = path.join(__dirname, "tmp", fileName);
-
-    stream.pipe(fs.createWriteStream(filePath));
-
-    stream.on('response', () => {
-      console.info('[DOWNLOADER]', 'Starting download now!');
-    });
-
-    stream.on('info', (info) => {
-      console.info('[DOWNLOADER]', `Downloading ${info.videoDetails.title} by ${info.videoDetails.author.name}`);
-    });
-
-    stream.on('end', () => {
-      const audioStream = fs.createReadStream(filePath);
-      message.reply({ attachment: audioStream });
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    message.reply("Sorry, an error occurred while processing your request.");
-  }
-}
-
-async function kshitiz(api, event, args, message) {
-  try {
-    const query = args.join(" ");
-    const searchResults = await yts(query);
-
-    if (!searchResults.videos.length) {
-      message.reply("No videos found for the given query.");
-      return;
-    }
-
-    const video = searchResults.videos[0];
-    const videoUrl = video.url;
-    const stream = ytdl(videoUrl, { filter: "audioandvideo" }); 
-    const fileName = `music.mp4`;
-    const filePath = path.join(__dirname, "tmp", fileName);
-
-    stream.pipe(fs.createWriteStream(filePath));
-
-    stream.on('response', () => {
-      console.info('[DOWNLOADER]', 'Starting download now!');
-    });
-
-    stream.on('info', (info) => {
-      console.info('[DOWNLOADER]', `Downloading ${info.videoDetails.title} by ${info.videoDetails.author.name}`);
-    });
-
-    stream.on('end', () => {
-      const videoStream = fs.createReadStream(filePath);
-      message.reply({ attachment: videoStream });
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-    });
-  } catch (error) {
-    console.error(error);
-    message.reply("Sorry, an error occurred while processing your request.");
-  }
-}
-
-async function b(c, d, e, f) {
-  try {
-    const g = await axios.get(`https://gpt-four.vercel.app/gpt?prompt=${encodeURIComponent(c)}&uid=${d}`);
-    return g.data.answer;
-  } catch (h) {
-    throw h;
-  }
-}
-
-async function i(c) {
-  try {
-    const j = await axios.get(`https://sdxl-kshitiz.onrender.com/gen?prompt=${encodeURIComponent(c)}&style=3`);
-    return j.data.url;
-  } catch (k) {
-    throw k;
-  }
-}
-
-async function describeImage(prompt, photoUrl) {
-  try {
-    const url = `https://sandipbaruwal.onrender.com/gemini2?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(photoUrl)}`;
-    const response = await axios.get(url);
-    return response.data.answer;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function l({ api, message, event, args }) {
-  try {
-    const m = event.senderID;
-    let n = "";
-    let draw = false;
-    let sendTikTok = false;
-    let sing = false;
-
-    if (args[0].toLowerCase() === "draw") {
-      draw = true;
-      n = args.slice(1).join(" ").trim();
-    } else if (args[0].toLowerCase() === "send") {
-      sendTikTok = true;
-      n = args.slice(1).join(" ").trim();
-    } else if (args[0].toLowerCase() === "sing") {
-      sing = true;
-      n = args.slice(1).join(" ").trim();
-    } else if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
-      const photoUrl = event.messageReply.attachments[0].url;
-      n = args.join(" ").trim();
-      const description = await describeImage(n, photoUrl);
-      message.reply(`Description: ${description}`);
-      return;
-    } else {
-      n = args.join(" ").trim();
-    }
-
-    if (!n) {
-      return message.reply("Please provide a prompt.");
-    }
-
-    if (draw) {
-      await drawImage(message, n);
-    } else if (sendTikTok) {
-      await kshitiz(api, event, args.slice(1), message); 
-    } else if (sing) {
-      await lado(api, event, args.slice(1), message); 
-    } else {
-      const q = await b(n, m);
-      message.reply(q, (r, s) => {
-        global.GoatBot.onReply.set(s.messageID, {
-          commandName: a.name,
-          uid: m 
-        });
-      });
-    }
-  } catch (t) {
-    console.error("Error:", t.message);
-    message.reply("An error occurred while processing the request.");
-  }
-}
-
-async function drawImage(message, prompt) {
-  try {
-    const u = await i(prompt);
-
-    const v = path.join(__dirname, 'cache', `image_${Date.now()}.png`);
-    const writer = fs.createWriteStream(v);
-
-    const response = await axios({
-      url: u,
-      method: 'GET',
-      responseType: 'stream'
-    });
-
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    }).then(() => {
-      message.reply({
-        body: "Generated image:",
-        attachment: fs.createReadStream(v)
-      });
-    });
-  } catch (w) {
-    console.error("Error:", w.message);
-    message.reply("An error occurred while processing the request.");
-  }
-}
-
-const a = {
-  name: "gpt",
-  aliases: ["chatgpt"],
-  version: "5.0",
-  author: "vex_kshitiz",
-  countDown: 5,
-  role: 0,
-  longDescription: "Chat with gpt",
-  category: "ai",
-  guide: {
-    en: "{p}gemini {prompt}"
-  }
-};
-
+ 
 module.exports = {
-  config: a,
-  handleCommand: l,
-  onStart: function ({ api, message, event, args }) {
-    return l({ api, message, event, args });
-  },
-  onReply: function ({ api, message, event, args }) {
-    return l({ api, message, event, args });
-  }
+    config: {
+    name: "gpt",
+    version: "1.0.0",
+    role: 0,
+    author: "api by jerome",//api by jerome
+    longDescription: "Gojo architecture",
+    category: "ai",
+    countDown: 5,
+},
+ 
+ 
+onChat: async function ({ api, event }) {
+ const message = event.body;
+  const command = "gojo";
+ 
+  if (message.indexOf(command) === 0 || message.indexOf(command.charAt(0).toUpperCase() + command.slice(1)) === 0) {
+    const args = message.split(/\s+/);
+    args.shift();
+   
+try {
+        const { messageID, messageReply } = event;
+        let prompt = args.join(' ');
+ 
+        if (messageReply) {
+            const repliedMessage = messageReply.body;
+            prompt = `${repliedMessage} ${prompt}`;
+        }
+ 
+        if (!prompt) {
+            return api.sendMessage('🐱 𝙷𝚎𝚕𝚕𝚘, 𝙸 𝚊𝚖 𝚐𝚘𝚓𝚘 𝚝𝚛𝚊𝚒𝚗𝚎𝚍 𝚋𝚢 𝙶𝚊𝚋𝚈𝚞\n\n𝙷𝚘𝚠 𝚖𝚊𝚢 𝚒 𝚊𝚜𝚜𝚒𝚜𝚝 𝚢𝚘𝚞 𝚝𝚘𝚍𝚊𝚢?', event.threadID, messageID);
+        }
+        api.sendMessage('🗨️ | 𝚐𝚘𝚓𝚘 𝚒𝚜 𝚜𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐, 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...', event.threadID);
+ 
+        // Delay
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
+ 
+        const gpt4_api = `https://gpt4withcustommodel.onrender.com/gpt?query=${encodeURIComponent(prompt)}&model=gpt-4-32k-0314`;
+        const manilaTime = moment.tz('Asia/Manila');
+        const formattedDateTime = manilaTime.format('MMMM D, YYYY h:mm A');
+ 
+        const response = await axios.get(gpt4_api);
+ 
+        if (response.data && response.data.response) {
+            const generatedText = response.data.response;
+ 
+            // Ai Answer Here
+            api.sendMessage(`☣️ 𝐆𝐨𝐣𝐨 𝐀𝐧𝐬𝐰𝐞𝐫\n━━━━━━━━━━━━━━━━\n\n🖋️ 𝙰𝚜𝚔: '${prompt}'\n\n𝗔𝗻𝘀𝘄𝗲𝗿: ${generatedText}\n\n🗓️ | ⏰ 𝙳𝚊𝚝𝚎 & 𝚃𝚒𝚖𝚎:\n.⋅ ۵ ${formattedDateTime} ۵ ⋅.\n\n━━━━━━━━━━━━━━━━`, event.threadID, messageID);
+        } else {
+            console.error('API response did not contain expected data:', response.data);
+            api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`, event.threadID, messageID);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, event.threadID, event.messageID);
+    }
+}
+},
+onStart: async function ({ api, event, args }) {
+ 
+}
 };
