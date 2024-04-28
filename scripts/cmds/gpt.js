@@ -3,10 +3,10 @@ const axios = require('axios');
  
 module.exports = {
     config: {
-    name: "gpt",
+    name: "Gojoai",
     version: "1.0.0",
     role: 0,
-    author: "api by jerome",//api by jerome
+    author: "Gab Yu",//api by jerome
     longDescription: "Gojo architecture",
     category: "ai",
     countDown: 5,
@@ -31,9 +31,9 @@ try {
         }
  
         if (!prompt) {
-            return api.sendMessage('🐱 𝙷𝚎𝚕𝚕𝚘, 𝙸 𝚊𝚖 𝚐𝚘𝚓𝚘 𝚝𝚛𝚊𝚒𝚗𝚎𝚍 𝚋𝚢 𝙶𝚊𝚋𝚈𝚞\n\n𝙷𝚘𝚠 𝚖𝚊𝚢 𝚒 𝚊𝚜𝚜𝚒𝚜𝚝 𝚢𝚘𝚞 𝚝𝚘𝚍𝚊𝚢?', event.threadID, messageID);
+            return api.sendMessage('☣️ 𝙷𝚎𝚕𝚕𝚘, 𝙸 𝚊𝚖 𝚐𝚘𝚓𝚘 𝚝𝚛𝚊𝚒𝚗𝚎𝚍 𝚋𝚢 𝙶𝚊𝚋𝚈𝚞\n\n𝙷𝚘𝚠 𝚖𝚊𝚢 𝚒 𝚊𝚜𝚜𝚒𝚜𝚝 𝚢𝚘𝚞 𝚝𝚘𝚍𝚊𝚢?', event.threadID, messageID);
         }
-        api.sendMessage('🗨️ | 𝚐𝚘𝚓𝚘 𝚒𝚜 𝚜𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐, 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...', event.threadID);
+        api.sendMessage('🔎 | 𝚐𝚘𝚓𝚘 𝚒𝚜 𝚜𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐, 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...', event.threadID);
  
         // Delay
         await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
