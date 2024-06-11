@@ -1,69 +1,55 @@
 const axios = require("axios");
+
+
 module.exports = {
-	config: {
-		name: 'sim',
-		version: '1.2',
-		author: 'KENLIEPLAYS',
-		countDown: 0,
-		role: 0,
-		shortDescription: 'Simsimi ChatBot by Simsimi.fun',
-		longDescription: {
-			en: 'Chat with simsimi'
-		},
-		category: 'sim',
-		guide: {
-			en: '   {pn} <word>: chat with simsimi'
-				+ '\n   Example:{pn} hi'
-		}
-	},
 
-	langs: {
-		en: {
-			chatting: 'Already Chatting with sim...',
-			error: 'What?'
-		}
-	},
+  config: {
 
-	onStart: async function ({ args, message, event, getLang }) {
-		if (args[0]) {
-			const yourMessage = args.join(" ");
-			try {
-				const responseMessage = await getMessage(yourMessage);
-				return message.reply(`${responseMessage}`);
-			}
-			catch (err) {
-				console.log(err)
-				return message.reply(getLang("error"));
-			}
-		}
-	},
+    name: "sim",
 
-	onChat: async ({ args, message, threadsData, event, isUserCallCommand, getLang }) => {
-		if (!isUserCallCommand) {
-			return;
-		}
-		if (args.length > 1) {
-			try {
-				const langCode = await threadsData.get(event.threadID, "settings.lang") || global.GoatBot.config.language;
-				const responseMessage = await getMessage(args.join(" "), langCode);
-				return message.reply(`${responseMessage}`);
-			}
-			catch (err) {
-				return message.reply(getLang("error"));
-			}
-		}
-	}
-};
+    version: "1.0.1",
 
-async function getMessage(yourMessage, langCode) {
-	try {
-		const res = await axios.get(`https://instadl.onrender.com/insta?url=https://www.instagram.com/reel/C41GLithgwz/?igsh=YzljYTk1ODg3Zg==`);
-		if (!res.data.success) {
-			throw new Error('API returned a non-successful message');
-		}
-		return res.data.success;
-	} catch (err) {
-		console.error('Error while getting a message:', err);
-		throw err;
-	}
+    author: "Kaizenji",
+
+    countDown: 5,
+
+    role: 0,
+
+    shortDescription: "simsimi",
+
+    longDescription: { en: "chat with sim"},
+
+    category: "fun",
+
+    guide: "{p}sim <ask>",
+
+  },
+
+
+onStart: async function ({ api, event, args, reply }) {
+
+         try {
+
+	 let message = args.join(" ");
+
+	 if (!message) {
+
+		return api.sendMessage(`please put a message`, event.threadID, event.messageID);
+
+	 }
+
+
+	 const response = await axios.get(`https://sim-server-0xx.onrender.com/sim?query=${message}`);
+
+	 const respond = response.data.success;
+
+	 api.sendMessage(respond, event.threadID, event.messageID);
+
+  } catch (error) {
+
+	 console.error("An error occurred:", error);
+
+	 api.sendMessage("api error nigga", event.threadID, event.messageID);
 }
+}
+};
