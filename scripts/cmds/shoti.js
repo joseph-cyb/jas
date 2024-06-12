@@ -1,52 +1,56 @@
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+
 module.exports = {
- config: {
-  name: "shoti",
-  aliases: ["st"],
-  version: "1.0.0",
-  role: 0,
-  author: "libyzxy0",//convert Kaizenji
-  longDescription: { en: "Generate a random tiktok video."},
-  category: "fun",
-  countDown: 0,
-},
+  config: {
+    name: "shoti",
+    aliases: [],
+    author: "Kshitiz",
+    version: "2.0",
+    cooldowns: 10,
+    role: 0,
+    shortDescription: "Get random shoti video",
+    longDescription: "Get random shoti video",
+    category: "fun",
+    guide: "{p}shoti",
+  },
 
-onStart: async ({ api, event, args }) => {
+  onStart: async function ({ api, event, args, message }) {
+    api.setMessageReaction("🕐", event.messageID, (err) => {}, true);
 
-  api.setMessageReaction("⏳", event.messageID, (err) => {
-     }, true);
-api.sendTypingIndicator(event.threadID, true);
+    try {
+      const response = await axios.get("https://shoti2-0-3pgh.onrender.com/kshitiz");
+      const postData = response.data.posts;
+      const randomIndex = Math.floor(Math.random() * postData.length);
+      const randomPost = postData[randomIndex];
 
-  const { messageID, threadID } = event;
-  const fs = require("fs");
-  const axios = require("axios");
-  const request = require("request");
-  const prompt = args.join(" ");
+      const videoUrls = randomPost.map(url => url.replace(/\\/g, "/"));
 
-  if (!prompt[0]) { api.sendMessage("Sending mga shoti ni GabYu...", threadID, messageID);
-    }
+      const selectedUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
 
- try {
-  const response = await axios.post(`https://shoti-server-v2.vercel.app/api/v1/get`, { apikey: `$shoti-1hjvb0q3sokk2bvme` });
+      const videoResponse = await axios.get(selectedUrl, { responseType: "stream" });
 
-  const path = __dirname + `/cache/shoti.mp4`;
-  const file = fs.createWriteStream(path);
-  const rqs = request(encodeURI(response.data.data.url));
-  rqs.pipe(file);
-  file.on(`finish`, () => {
-     setTimeout(function() {
-       api.setMessageReaction("✅", event.messageID, (err) => {
-          }, true);
-      return api.sendMessage({
-      body: `SHOTI DOWNLOADED! \n\n🍑 •| userName: @${response.data.data.user.username}\n🍑 •| userNickname: ${response.data.data.user.nickname}\n👾 •| userID: ${response.data.data.user.userID}\n👾 •| Duration: ${response.data.data.duration}`, 
-      attachment: fs.createReadStream(path)
-    }, threadID);
-      }, 5000);
+      const tempVideoPath = path.join(__dirname, "cache", `${Date.now()}.mp4`);
+      const writer = fs.createWriteStream(tempVideoPath);
+      videoResponse.data.pipe(writer);
+
+      writer.on("finish", async () => {
+        const stream = fs.createReadStream(tempVideoPath);
+        const user = response.data.user || "@user_unknown";
+        await message.reply({
+          body: `username:"${user}"`,
+          attachment: stream,
         });
-  file.on(`error`, (err) => {
-      api.sendMessage(`Error: ${err}`, threadID, messageID);
-  });
-   } catch (err) {
-    api.sendMessage(`Error: ${err}`, threadID, messageID);
+        api.setMessageReaction("✅", event.messageID, (err) => {}, true);
+        fs.unlink(tempVideoPath, (err) => {
+          if (err) console.error(err);
+          console.log(`Deleted ${tempVideoPath}`);
+        });
+      });
+    } catch (error) {
+      console.error(error);
+      message.reply("Sorry, an error occurred while processing your request.");
+    }
   }
-}
 };
