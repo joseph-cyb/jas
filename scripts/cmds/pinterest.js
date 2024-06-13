@@ -1,70 +1,111 @@
-const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
- 
-/*Do not change
-        the credit 🐢👑🥴*/
- 
+const axios = require('axios');
+
+const fs = require("fs");
+
+
 module.exports = {
-  config: {
-    name: "pinterest",
-    aliases: ["pin"],
-    version: "1.0",
-    author: " Samir Œ | rehat--",
-    role: 0,
-    countDown: 60,
-    longDescription: {
-      en: "Get Image From Pinterest",
-    },
-    category: "image",
-    guide: {
-      en: "{pn} <search query> <number of images>\nExample: {pn} Tomozaki -5"
-    }
-  },
 
-  onStart: async function ({ api, event, args }) {
-    try {
-      const keySearch = args.join(" ");
-      if (!keySearch.includes("-")) {
-        return api.sendMessage(
-          "Please enter the search query and -number of images (1-6)",
-          event.threadID,
-          event.messageID
-        );
-      }
-      const keySearchs = keySearch.substr(0, keySearch.indexOf("-"));
-      let numberSearch = keySearch.split("-").pop() || 9;
-      if (numberSearch > 9) {
-        numberSearch = 9;
-      }
+config: {
 
-      const apiUrl = `https://api-samirxyz.onrender.com/api/Pinterest?query=${encodeURIComponent(keySearchs)}& number=${numberSearch}&apikey=global`;
+  name: "pinterest",
+  
+  aliases: ["pin"],
 
-      const res = await axios.get(apiUrl);
-      const data = res.data.result;
-      const imgData = [];
+  version: "1.0.1",
 
-      for (let i = 0; i < Math.min(numberSearch, data.length); i++) {
-        const imgResponse = await axios.get(data[i], {
-          responseType: "arraybuffer"
-        });
-        const imgPath = path.join(__dirname, "cache", `${i + 1}.jpg`);
-        await fs.outputFile(imgPath, imgResponse.data);
-        imgData.push(fs.createReadStream(imgPath));
-      }
+  role: 0,
 
-      await api.sendMessage({
-        attachment: imgData,
-      }, event.threadID, event.messageID);
+  author: "Waitzkin | convert by Kaizenji",
 
-      await fs.remove(path.join(__dirname, "cache"));
-    } catch (error) {
-      console.error(error);
-      return api.sendMessage(
-        `An error occurred.`,
-        event.threadID,
-        event.messageID
-      );
-    }
+  longDescription: {en: "search image using pinterest"},
+
+  category: "image",
+
+  countDown: 10,
+
+},
+
+
+onStart: async function ({ api, event, args }) {
+
+
+  let text = args.join(" ");
+
+  const search = text.split(">")[0].trim();
+
+  if (!search) {
+
+    return api.sendMessage("🖼 | 𝖧𝗈𝗐 𝗍𝗈 𝗎𝗌𝖾 𝗉𝗂𝗇𝗍𝖾𝗋𝖾𝗌𝗍 𝖼𝗈𝗆𝗆𝖺𝗇𝖽?\n\n𝖤𝗑𝖺𝗆𝗉𝗅𝖾: {p}𝗉𝗂𝗇𝗍𝖾𝗋𝖾𝗌𝗍 𝖼𝖺𝗍𝗌 -5", event.threadID);
+
   }
+
+  let count;
+
+  if (text.includes("-")) {
+
+    count = text.split("-")[1].trim()
+
+  } else {
+
+    count = 4;
+
+  }
+
+
+  try {
+
+    const response = await axios.get(`https://hashier-api-v1.vercel.app/api/pinterest?search=${search}`);
+
+    api.sendMessage('🖼 | 𝖯𝗂𝗇𝗍𝖾𝗋𝖾𝗌𝗍 𝗂𝗌 𝗌𝖾𝖺𝗋𝖼𝗁𝗂𝗇𝗀, 𝗉𝗅𝖾𝖺𝗌𝖾 𝗐𝖺𝗂𝗍...', event.threadID);
+
+
+    const data = response.data;
+
+    if (data.error) {
+
+      return api.sendMessage(data.error, event.threadID);
+
+    } else {
+
+      let attachment = [];
+
+      let storedPath = [];
+
+      for (let i = 0; i < data.count; i++) {
+
+        if (i == count) break;
+
+        let path = __dirname + "/cache/" + Math.floor(Math.random() * 99999999) + ".jpg";
+
+        let pic = await axios.get(data.data[i], { responseType: "arraybuffer" });
+
+        fs.writeFileSync(path, pic.data);
+
+        storedPath.push(path);
+
+        attachment.push(fs.createReadStream(path))
+
+      }
+
+      api.sendMessage({ body: `🖼 | 𝖯𝗂𝗇𝗍𝖾𝗋𝖾𝗌𝗍 (𝖱𝖾𝗌𝗎𝗅𝗍𝗌)\n\n👁‍🗨 | 𝖯𝗋𝗈𝗆𝗉𝗍: '${search}'\n\n✒ | 𝖢𝗈𝗎𝗇𝗍: ${attachment.length} - ${data.count}`, attachment: attachment }, event.threadID, () => {
+
+        for (const item of storedPath) {
+
+          fs.unlinkSync(item)
+
+        }
+
+      }, event.messageID);
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    return api.sendMessage("💀 | API SUCKS BRO.", event.threadID); 
+
+  }
+},
+
 };
