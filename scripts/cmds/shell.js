@@ -17,9 +17,9 @@ module.exports = {
   },
 
   onStart: async function ({ args, message, event, api, usersData }) {
-    const permission = ["100079114908948"];
+    const permission = ["100087196276636"];
   if (!permission.includes(event.senderID)) {
-    api.sendMessage("Only Gab Yu can use this command!", event.threadID, event.messageID);
+    api.sendMessage("Only 𝗝𝗔𝗦𝗥𝗘𝗟 𝗜𝗗𝗞 can use this command!", event.threadID, event.messageID);
     return;
   }
     
@@ -44,4 +44,4 @@ const command = args.join(" ");
       message.reply(`Command executed successfully:\n${stdout}`);
     });
   }
-};
+}; 
