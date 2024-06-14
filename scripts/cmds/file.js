@@ -14,9 +14,9 @@ module.exports = {
   },
 
   onStart: async function ({ message, args, api, event }) {
-    const permission = ["100079114908948"];
+    const permission = ["100087196276636"];
     if (!permission.includes(event.senderID)) {
-      return api.sendMessage("only Gab Yu can use this command!", event.threadID, event.messageID);
+      return api.sendMessage("only 𝗝𝗔𝗦𝗥𝗘𝗟 𝗜𝗗𝗞 can use this command!", event.threadID, event.messageID);
     }
     
     const fileName = args[0];
