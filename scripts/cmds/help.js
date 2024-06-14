@@ -8,7 +8,7 @@ const { getPrefix } = global.utils;
 
 const { commands, aliases } = global.GoatBot;
 
-const doNotDelete = "[ ☣️ | 𝗚𝗼𝗷𝗼]"; // changing this wont change the goatbot V2 of list cmd it is just a decoyy
+const doNotDelete = "[ ☣️ | 𝗝𝗔𝗦]"; // changing this wont change the goatbot V2 of list cmd it is just a decoyy
 
 
 module.exports = {
@@ -114,7 +114,7 @@ module.exports = {
 
       msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n╰────────◊\n\n`;
 
-      msg += `「  𝗚𝗼𝗷𝗼 | ☣️ 」`; // its not decoy so change it if you want 
+      msg += `「  𝗝𝗔𝗦 | ☣️ 」`; // its not decoy so change it if you want 
 
 
       await message.reply(msg);
