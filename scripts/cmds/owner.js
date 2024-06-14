@@ -32,17 +32,17 @@ config: {
 
     const ownerInfo = {
 
-      name: '𝗚𝗔𝗕 𝗬𝗨',
+      name: '𝗝𝗔𝗦𝗥𝗘𝗟 𝗜𝗗𝗞',
 
       gender: '𝗠𝗔𝗟𝗘',
 
-      age: '𝟭𝟰',
+      age: '18',
 
       height: '𝟱 𝟳',
 
-      facebookLink: 'https://www.facebook.com/profile.php?id=100079114908948',
+      facebookLink: 'https://www.facebook.com/jasrelking17',
 
-      nick: '𝗚𝗜𝗬𝗨'
+      nick: '𝗝𝗔𝗦'
 
     };
 
