@@ -49,9 +49,9 @@ onReply: async function({ api, event, Reply, getLang, commandName, prefix }) {
             if (isNaN(singleIndex) || singleIndex <= 0 || singleIndex > Reply.pending.length) return api.sendMessage(getLang("invaildNumber", singleIndex), threadID, messageID);
             api.sendMessage(`✅ 𝗖𝗢𝗡𝗡𝗘𝗖𝗧𝗘𝗗 𝗦𝗨𝗖𝗖𝗘𝗦! 
 
-➭ BotName: 𝗚𝗢𝗝𝗢 𝗕𝗢𝗧
+➭ BotName: 𝗝𝗮𝘀𝗕𝗼𝘁
 ➭ Bot Prefix: ⟨ / ⟩
-➭ Admin: ⟨ 𝗚𝗔𝗕 𝗬𝗨 ⟩
+➭ Admin: ⟨ 𝗝𝗮𝘀𝗿𝗲𝗹 𝗜𝗱𝗸 ⟩
 ➭ Ownerlink: ‹https://www.facebook.com/100079114908948›
 ➭ Use /help to view command details`, Reply.pending[singleIndex - 1].threadID);
             count+=1;
