@@ -20,7 +20,7 @@ Yo, my prefix is [ 𓆩 / 𓆪 ]\n
 ➥ /gojo [prompt] -> talk to gojo
 ➥ /sim [message] -> talk to bot
 ➥ /callad [message] -> report any problem encountered
-➥ /help [command] -> information and usage of command\n\nHave fun using it enjoy!❤️\nBot Developer: https://www.facebook.com/profile.php?id=100079114908948`,
+➥ /help [command] -> information and usage of command\n\nHave fun using it enjoy!❤️\nBot Developer: https://www.facebook.com/jasrelking17`,
  attachment: await global.utils.getStreamFromURL("https://i.imgur.com/9ao3PrP.gif")
  });
  }
